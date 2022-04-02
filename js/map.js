@@ -9,11 +9,12 @@ class CanvasMap {
   isMoving = false;
   initMovePoint = new Point(0, 0);
   imgLocation = new Point(50, 50);
-  shouldDraw = false;
+  shouldDraw = true;
 
   img;
   canvas;
   context;
+  markers;
 
   draw() {
     if (this.shouldDraw) {
@@ -21,6 +22,7 @@ class CanvasMap {
       this.context.fillStyle = "white";
       this.context.fillRect(this.origin.x, this.origin.y, width/this.scale, height/this.scale);
       this.context.drawImage(this.img, this.imgLocation.x, this.imgLocation.y, 800, 800);
+      this.shouldDraw = false;
     }
     window.requestAnimationFrame(() => this.draw());
   }
@@ -51,6 +53,11 @@ class CanvasMap {
     };
   }
 
+  loadExistedMarkers() {
+    const arr = JSON.parse(localStorage.getItem('markers') || '[]');
+    return arr;
+  }
+
   constructor(imgLocation) {
     // Canvas creation
     this.canvas = document.getElementById('map');
@@ -59,6 +66,7 @@ class CanvasMap {
     this.canvas.height = height;
 
     this.initAttachEvents();
+    this.markers = this.loadExistedMarkers();
 
     // Load image and initialize draw animation
     this.img = new Image();

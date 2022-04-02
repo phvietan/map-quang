@@ -6,6 +6,6 @@ var global = {
   sizeMapHeight: window.innerHeight * 85 / 100,
 
   zoomIntensity: 0.08, // The higher the faster it zoom
-  limitMaxZoomIn: 10, // Limit zoom into 4 times bigger
-  limitMaxZoomOut: 3, // Limit zoom out 3 times smaller
+  limitMaxZoomIn: 2, // Limit zoom in for 2 times bigger
+  limitMaxZoomOut: 2, // Limit zoom out for 2 times smaller
 };

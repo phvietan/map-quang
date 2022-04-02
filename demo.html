@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <title>Zoom maker demo</title>
 
-    <link rel="stylesheet" href="/css/action-tab.css">
+    <link rel="stylesheet" href="/css/index.css">
     <script src="/js/global.js"></script>
     <script src="/js/point.js"></script>
+    <script src="/js/marker.js"></script>
     <script src="/js/internal/onZoom.js"></script>
     <script src="/js/internal/onMove.js"></script>
 </head>
 
 <body>
 
-  <div class="action-tab">
-    <button id="zoom-marker-btn-clean">clean marker</button>
-    <button id="zoom-marker-btn-reset">reset</button>
+  <div id="add-marker-tab">
+    <h1>Add marker tab</h1>
+    <p>Description</p>
+    <textarea rows="5" cols="50"></textarea><br>
+    <button>Click me to add</button>
   </div>
 
   <canvas id="map">Your browser doesn't support canvas</canvas>
