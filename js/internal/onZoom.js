@@ -31,6 +31,6 @@ function _internalOnZoom(event, map) {
   // Offset the visible origin to it's proper position.
   map.context.translate(-map.origin.x, -map.origin.y);
 
-  // Update scale and others.
+  // Update scale
   map.scale *= zoom;
 }

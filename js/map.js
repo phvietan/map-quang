@@ -8,19 +8,20 @@ class CanvasMap {
   origin = new Point(0, 0);
   isMoving = false;
   initMovePoint = new Point(0, 0);
+  imgLocation = new Point(50, 50);
+  shouldDraw = false;
 
   img;
-  context;
   canvas;
+  context;
 
   draw() {
-    // Clear screen then draw image
-    this.context.fillStyle = "white";
-    this.context.fillRect(this.origin.x, this.origin.y, width/this.scale, height/this.scale);
-    this.context.drawImage(this.img, 50, 50, 800, 800);
-
-    // Redraw for each frame
-    // TODO: performance boost here
+    if (this.shouldDraw) {
+      // Clear screen then draw image
+      this.context.fillStyle = "white";
+      this.context.fillRect(this.origin.x, this.origin.y, width/this.scale, height/this.scale);
+      this.context.drawImage(this.img, this.imgLocation.x, this.imgLocation.y, 800, 800);
+    }
     window.requestAnimationFrame(() => this.draw());
   }
 
@@ -28,15 +29,28 @@ class CanvasMap {
   onZoom(event) {
     event.preventDefault();
     _internalOnZoom(event, this);
+    this.shouldDraw = true;
   }
 
   // To Quang: you can add hook when move here if you want
   onMove(event) {
     event.preventDefault();
-    console.log(event);
-    // this.origin.x -= event.
+    _internalOnMove(event, this);
+    this.shouldDraw = true;
   }
-  
+
+  initAttachEvents() {
+    // Attach zoom event
+    this.canvas.onwheel = (e) => this.onZoom(e);
+
+    // Attach move event
+    this.canvas.onmousedown = (e) => _internalOnMouseDown(e, this);
+    this.canvas.onmouseup = (e) => this.isMoving = false;
+    this.canvas.onmousemove = (e) => {
+      if (this.isMoving) this.onMove(e)
+    };
+  }
+
   constructor(imgLocation) {
     // Canvas creation
     this.canvas = document.getElementById('map');
@@ -44,18 +58,7 @@ class CanvasMap {
     this.canvas.width = width;
     this.canvas.height = height;
 
-    // Attach zoom event
-    this.canvas.onwheel = (e) => this.onZoom(e);
-
-    // Attach move event
-    this.canvas.onmousedown = (e) => {
-      this.isMoving = true;
-      this.initMovePoint = new Point(e.x, e.y);
-    }
-    this.canvas.onmouseup = (e) => this.isMoving = false;
-    this.canvas.onmousemove = (e) => {
-      if (this.isMoving) this.onMove(e)
-    };
+    this.initAttachEvents();
 
     // Load image and initialize draw animation
     this.img = new Image();
