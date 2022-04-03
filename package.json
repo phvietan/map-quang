@@ -1,0 +1,25 @@
+{
+  "name": "zoom-maker",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "devDependencies": {
+    "webpack-cli": "^4.9.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack --config ./webpack/webpack.dev_config.js",
+    "build:prod": "webpack --config ./webpack/webpack.prod_config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phvietan/map-quang.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phvietan/map-quang/issues"
+  },
+  "homepage": "https://github.com/phvietan/map-quang#readme",
+  "description": ""
+}

@@ -1,4 +1,4 @@
-class Point {
+export class Point {
   x; y;
 
   /**
@@ -28,3 +28,5 @@ class Point {
     return `(${this.x};${this.y})`;
   }
 }
+
+window.Point = Point;

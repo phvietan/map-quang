@@ -1,4 +1,4 @@
-var global = {
+export const myGlobal = {
   windowWidth: window.innerWidth,
   windowHeight: window.innerHeight,
 
@@ -9,3 +9,5 @@ var global = {
   limitMaxZoomIn: 2, // Limit zoom in for 2 times bigger
   limitMaxZoomOut: 2, // Limit zoom out for 2 times smaller
 };
+
+window.myGlobal = myGlobal;

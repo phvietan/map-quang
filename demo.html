@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Zoom maker demo</title>
-
-    <link rel="stylesheet" href="/css/index.css">
-    <script src="/js/global.js"></script>
-    <script src="/js/point.js"></script>
-    <script src="/js/marker.js"></script>
-    <script src="/js/internal/onZoom.js"></script>
-    <script src="/js/internal/onMove.js"></script>
+  <meta charset="UTF-8">
+  <title>Zoom maker demo</title>
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body>
@@ -22,7 +16,20 @@
   </div>
 
   <canvas id="map">Your browser doesn't support canvas</canvas>
-  <script src="/js/map.js"></script>
+  <script src="/dist/bundle.js"></script>
+  <script defer>
+    const map = new CanvasMap('/img/sodo.png');
+    // Example
+    // map.loadOneMarker({
+    //   "StreamURL": "https://...",
+    //   "CameraName": "Quang",
+    //   "CameraType": "Type 2",
+    //   "CameraModel": "Model 2",
+    //   "X": 100,
+    //   "Y": 100,
+    //   "iconUrl": "/icon/cctv.png",
+    // });
+  </script>
 
 </body>
 
