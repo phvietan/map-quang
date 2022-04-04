@@ -6,6 +6,7 @@ import {
   _internalOnMove,
   _internalOnMouseUp,
   _internalOnMouseDown,
+  _internalIsHoverMarker,
 } from './internal/index.js';
 import { myGlobal } from './global.js';
 
@@ -55,10 +56,15 @@ export class CanvasMap {
     this.canvas.onwheel = (e) => this.#onZoom(e);
 
     // Attach move event
-    this.canvas.onmousedown = (e) => _internalOnMouseDown(e, this);
+    this.canvas.onmousedown = (e) => {
+      _internalOnMouseDown(e, this);
+    }
     this.canvas.onmouseup = (e) => _internalOnMouseUp(e, this);
     this.canvas.onmousemove = (e) => {
-      if (this.isMoving) this.#onMove(e)
+      if (this.isMoving) this.#onMove(e);
+      else if (_internalIsHoverMarker(e, this)) {
+        console.log('a')
+      }
     };
   }
 

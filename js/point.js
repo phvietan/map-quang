@@ -17,6 +17,10 @@ export class Point {
     return new Point(this.x - a.x, this.y - a.y);
   }
 
+  getVal() {
+    return Math.sqrt(this.x*this.x + this.y*this.y);
+  }
+
   /**
    * @param {number} scale
   */
