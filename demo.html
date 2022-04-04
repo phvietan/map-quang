@@ -18,17 +18,21 @@
   <canvas id="map">Your browser doesn't support canvas</canvas>
   <script src="/dist/bundle.js"></script>
   <script defer>
-    const map = new CanvasMap('/img/sodo.png');
-    // Example
-    // map.loadOneMarker({
-    //   "StreamURL": "https://...",
-    //   "CameraName": "Quang",
-    //   "CameraType": "Type 2",
-    //   "CameraModel": "Model 2",
-    //   "X": 100,
-    //   "Y": 100,
-    //   "iconUrl": "/icon/cctv.png",
-    // });
+    async function main() {
+      const map = new CanvasMap('/img/sodo.png');
+      // Example
+      await map.loadOneMarker({
+        "StreamURL": "https://...",
+        "CameraName": "Quang",
+        "CameraType": "Type 2",
+        "CameraModel": "Model 2",
+        "X": 100,
+        "Y": 100,
+        // "iconUrl": "/icon/map-marker.png",
+      });
+    }
+    main();
+
   </script>
 
 </body>

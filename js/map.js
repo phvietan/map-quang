@@ -4,6 +4,7 @@ import {
   _internalDraw,
   _internalOnZoom,
   _internalOnMove,
+  _internalOnMouseUp,
   _internalOnMouseDown,
 } from './internal/index.js';
 import { myGlobal } from './global.js';
@@ -15,7 +16,7 @@ export class CanvasMap {
   origin = new Point(0, 0);
   isMoving = false;
   initMovePoint = new Point(0, 0);
-  imgLocation = new Point(50, 50);
+  imgLocation = new Point(0, 0);
   shouldDraw = true;
   img;
   canvas;
@@ -55,39 +56,25 @@ export class CanvasMap {
 
     // Attach move event
     this.canvas.onmousedown = (e) => _internalOnMouseDown(e, this);
-    this.canvas.onmouseup = (e) => this.isMoving = false;
+    this.canvas.onmouseup = (e) => _internalOnMouseUp(e, this);
     this.canvas.onmousemove = (e) => {
       if (this.isMoving) this.#onMove(e)
     };
   }
 
   async #waitForMarkersLoad() {
-    console.log(this);
     for (let i = 0; i < this.markers.length; ++i) {
       await this.markers[i].waitFinishLoad();
     }
   }
 
   /**
-   * Attempt to load markers array
-   * @void
-   * @param {Marker[]} markers
-   */
-  loadMarkers(markers) {
-    if (!markers) {
-      const storageMarkers = JSON.parse(localStorage.getItem('markers') || '[]');
-      return storageMarkers.map((storageMarker, index) => new Marker(storageMarker, `marker-${index}`));
-    }
-    return markers;
-  }
-
-  /**
    * Attempt to add one marker. Must have properties: ["StreamURL", "CameraName", "CameraType", "CameraModel", "X", "Y"], and may have property: "iconUrl"
-   *
+   * @async
    * @param {any} markerJson
    * @example
    *
-   * map.loadOneMarker({
+   * await map.loadOneMarker({
    *   "StreamURL": "https://...",
    *   "CameraName": "Quang",
    *   "CameraType": "Type 1",
@@ -98,10 +85,13 @@ export class CanvasMap {
    * })
    */
   async loadOneMarker(markerJson) {
-    const marker = new Marker(markerJson, `marker-${this.markers.length}`);
+    const marker = new Marker({
+      id: `marker-${this.markers.length}`,
+      ...markerJson,
+    });
     await marker.waitFinishLoad();
     this.markers.push(marker);
-    localStorage.setItem('markers', JSON.stringify(this.markers));
+    this.shouldDraw = true;
   }
 
   clearMarkers() {
@@ -127,7 +117,6 @@ export class CanvasMap {
     this.canvas.height = myGlobal.sizeMapHeight;
 
     this.#initAttachEvents();
-    this.markers = this.loadMarkers();
 
     // Load image and initialize draw animation
     this.img = new Image();

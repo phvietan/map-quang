@@ -5,14 +5,15 @@ import { sleep } from './internal/sleep';
  * @property StreamURL, CameraName, CameraType, CameraModel, X, Y, iconUrl
  */
 export class Marker {
-  id = "";
   StreamURL = "";
   CameraName = "";
   CameraType = "";
   X = 0;
   Y = 0;
 
-  iconUrl = '/icon/map-marker.png';
+  id = 'marker-0';
+  size = 50; // Size of marker default is 50x50 pixel (you can pass into constructor to change this size)
+  iconUrl = '/icon/CameraOn_Dark.svg';
   img = null;
   finishedLoad = false;
 
@@ -21,7 +22,6 @@ export class Marker {
     for (let i = 0; i < requiredKeys.length; ++i) {
       const requiredKey = requiredKeys[i];
       if (!json.hasOwnProperty(requiredKey)) throw new Error(`Wrong marker json: missing key ${requiredKey}`);
-      this[requiredKey] = json[requiredKey]; // Only load required keys
     }
   }
 
@@ -29,14 +29,15 @@ export class Marker {
     while (!this.finishedLoad) await sleep(50);
   }
 
-  constructor(json, markerId = 'marker-0', iconUrl = '/icon/map-marker.png') {
+  constructor(json) {
     this.#validateAndAssignCameraJson(json);
-    this.id = markerId;
-    this.iconUrl = iconUrl;
-
+    delete json["finishedLoad"]; // should not assign finishedLoad param
+    Object.assign(this, json);
     this.img = new Image();
     this.img.src = this.iconUrl;
-    this.img.onload = () => this.finishedLoad = true;
+    this.img.onload = () => {
+      this.finishedLoad = true;
+    }
   }
 }
 

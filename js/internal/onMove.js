@@ -1,4 +1,5 @@
 import { Point } from '../point';
+
 /**
  * Internal event when user is about to move, do not care this function
  * @function
@@ -13,6 +14,10 @@ export function _internalOnMouseDown(e, map) {
   );
 }
 
+export function _internalOnMouseUp(e, map) {
+  map.isMoving = false;
+}
+
 /**
  * Internal map move, do not care this function
  * @function
@@ -24,7 +29,7 @@ export function _internalOnMove(event, map) {
     event.clientX - map.canvas.offsetLeft,
     event.clientY - map.canvas.offsetTop,
   );
-  const vectorMove = map.initMovePoint.minus(currentMouse).multiply(1/map.scale);
+  const vectorMove = map.initMovePoint.minus(currentMouse);
   map.imgLocation = map.imgLocation.minus(vectorMove);
   map.markers.forEach(marker => {
     marker.X -= vectorMove.x;
