@@ -1,5 +1,5 @@
 import { myGlobal } from '../global.js';
-
+import { CanvasMap } from '../map'
 // Internal: check zoom exceed limit, do not care this function
 function _internalCheckMaxZoom(currentScale, zoom) {
   const afterScale = currentScale * zoom;
@@ -22,15 +22,10 @@ export function _internalOnZoom(event, map) {
   const zoom = Math.exp(wheelDirection * myGlobal.zoomIntensity);
   if (_internalCheckMaxZoom(map.scale, zoom)) return;
 
-  // Translate so the visible origin is at the context's origin.
   map.context.translate(map.origin.x, map.origin.y);
-
-  // Compute the current origin so that zoom
   map.origin.x -= mouse.x/(map.scale*zoom) - mouse.x/map.scale;
   map.origin.y -= mouse.y/(map.scale*zoom) - mouse.y/map.scale;
   map.context.scale(zoom, zoom);
-
-  // Offset the visible origin to it's proper position.
   map.context.translate(-map.origin.x, -map.origin.y);
 
   // Update scale
