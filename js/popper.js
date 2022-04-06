@@ -1,3 +1,4 @@
+import { myGlobal } from './global';
 import { Marker } from './marker';
 
 var cntZIndex = 0;
@@ -22,8 +23,6 @@ function escapeHtml (string) {
 function createElementFromHTML(htmlString) {
   var div = document.createElement('div');
   div.innerHTML = htmlString.trim();
-
-  // Change this to div.childNodes to support multiple top-level nodes.
   return div.firstChild;
 }
 
@@ -33,7 +32,7 @@ function valueOrNone(s) {
 }
 
 export class Popper {
-  width = "230px"; // Default popper's width
+  width = myGlobal.defaultPopperWidth; // Default popper's width
   id;
   html;
   tabChoosing = "properties";
