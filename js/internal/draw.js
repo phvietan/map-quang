@@ -1,4 +1,3 @@
-import { myGlobal } from '../global.js';
 import { CanvasMap } from '../map';
 
 /**
@@ -22,9 +21,16 @@ export function _internalDraw(map) {
     map.img.width * map.scale,
     map.img.height * map.scale,
   );
+  let found = false;
   map.markers.forEach(marker => {
-    const x = marker.X - marker.size / 2;
-    const y = marker.Y - marker.size / 2;
-    map.context.drawImage(marker.img, x, y, marker.size, marker.size);
+    if (marker.img.complete && marker.img.naturalHeight !== 0) {
+      const x = marker.X - marker.size / 2;
+      const y = marker.Y - marker.size / 2;
+      map.context.drawImage(marker.img, x, y, marker.size, marker.size);
+    } else {
+      console.log('Found a marker has not loaded, will redraw');
+      found = true; // Should redraw if there is a marker has not fully loaded
+    }
   });
+  map.shouldDraw = found;
 }

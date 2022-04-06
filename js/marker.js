@@ -1,4 +1,4 @@
-import { sleep } from './internal/sleep';
+import { Popper } from './popper';
 
 /**
  * Marker class
@@ -8,14 +8,20 @@ export class Marker {
   StreamURL = "";
   CameraName = "";
   CameraType = "";
+  CameraModel = "";
   X = 0;
   Y = 0;
 
-  id = 'marker-0';
+  id = 0;
   size = 50; // Size of marker default is 50x50 pixel (you can pass into constructor to change this size)
   iconUrl = '/icon/CameraOn_Dark.svg';
+
+  /** @type HTMLImageElement */
   img = null;
-  finishedLoad = false;
+  isSelecting = false;
+
+  /** @type Popper */
+  popper = null;
 
   #validateAndAssignCameraJson(json) {
     const requiredKeys = ["StreamURL", "CameraName", "CameraType", "CameraModel", "X", "Y"];
@@ -25,19 +31,15 @@ export class Marker {
     }
   }
 
-  async waitFinishLoad() {
-    while (!this.finishedLoad) await sleep(50);
-  }
-
   constructor(json) {
     this.#validateAndAssignCameraJson(json);
-    delete json["finishedLoad"]; // should not assign finishedLoad param
     Object.assign(this, json);
     this.img = new Image();
     this.img.src = this.iconUrl;
     this.img.onload = () => {
-      this.finishedLoad = true;
+      console.log(`Done loaded marker ${this.id}`);
     }
+    this.popper = new Popper(this);
   }
 }
 

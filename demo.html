@@ -7,27 +7,37 @@
 </head>
 
 <body>
-
-  <div id="add-marker-tab">
-    <h1>Add marker tab</h1>
-    <p>Description</p>
-    <textarea rows="5" cols="50"></textarea><br>
-    <button>Click me to add</button>
-  </div>
-
   <canvas id="map">Your browser doesn't support canvas</canvas>
   <script src="/dist/bundle.js"></script>
   <script defer>
     async function main() {
-      const map = new CanvasMap('/img/sodo.png');
+      window.map = new CanvasMap('/img/sodo.png');
       // Example
-      await map.loadOneMarker({
+      map.loadOneMarker({
         "StreamURL": "https://...",
         "CameraName": "Quang",
         "CameraType": "Type 2",
         "CameraModel": "Model 2",
         "X": 100,
         "Y": 100,
+        // "iconUrl": "/icon/map-marker.png",
+      });
+      map.loadOneMarker({
+        "StreamURL": "https://...",
+        "CameraName": "Quang",
+        "CameraType": "Type 2",
+        "CameraModel": "Model 2",
+        "X": 200,
+        "Y": 200,
+        // "iconUrl": "/icon/map-marker.png",
+      });
+      map.loadOneMarker({
+        "StreamURL": "https://...",
+        "CameraName": "Quang",
+        "CameraType": "Type 2",
+        "CameraModel": "Model 2",
+        "X": 300,
+        "Y": 400,
         // "iconUrl": "/icon/map-marker.png",
       });
     }

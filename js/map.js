@@ -5,6 +5,7 @@ import {
   _internalOnZoom,
   _internalOnMove,
   _internalOnMouseUp,
+  _internalShouldDraw,
   _internalOnMouseDown,
   _internalIsHoverMarker,
 } from './internal/index.js';
@@ -32,28 +33,13 @@ export class CanvasMap {
 
   #draw() {
     if (this.isDeleted) return;
-    if (this.shouldDraw) {
-      _internalDraw(this);
-      this.shouldDraw = false;
-    }
+    if (this.shouldDraw) _internalDraw(this);
     window.requestAnimationFrame(() => this.#draw());
-  }
-
-  #onZoom(event) {
-    event.preventDefault();
-    _internalOnZoom(event, this);
-    this.shouldDraw = true;
-  }
-
-  #onMove(event) {
-    event.preventDefault();
-    _internalOnMove(event, this);
-    this.shouldDraw = true;
   }
 
   #initAttachEvents() {
     // Attach zoom event
-    this.canvas.onwheel = (e) => this.#onZoom(e);
+    this.canvas.onwheel = (e) => _internalOnZoom(e, this);
 
     // Attach move event
     this.canvas.onmousedown = (e) => {
@@ -61,17 +47,19 @@ export class CanvasMap {
     }
     this.canvas.onmouseup = (e) => _internalOnMouseUp(e, this);
     this.canvas.onmousemove = (e) => {
-      if (this.isMoving) this.#onMove(e);
-      else if (_internalIsHoverMarker(e, this)) {
-        console.log('a')
+      if (this.isMoving) _internalOnMove(e, this);
+      else {
+        const mark = _internalIsHoverMarker(e, this)
+        if (mark !== null) {
+          mark.popper.show(true);
+        } else {
+          this.markers.forEach((marker) => marker.popper.show(false));
+        }
       }
     };
-  }
-
-  async #waitForMarkersLoad() {
-    for (let i = 0; i < this.markers.length; ++i) {
-      await this.markers[i].waitFinishLoad();
-    }
+    // this.canvas.onkeypress = (e) => {
+    //   console.log(e.keyCode);
+    // }
   }
 
   /**
@@ -90,23 +78,30 @@ export class CanvasMap {
    *   "iconUrl": "...",
    * })
    */
-  async loadOneMarker(markerJson) {
+  loadOneMarker(markerJson) {
     const marker = new Marker({
-      id: `marker-${this.markers.length}`,
+      id: this.markers.length,
       ...markerJson,
     });
-    await marker.waitFinishLoad();
     this.markers.push(marker);
+  }
+
+  clearMarker(markerId) {
+    markerId = parseInt(markerId);
+    this.markers[markerId].popper.clear();
+    this.markers.splice(markerId, 1);
     this.shouldDraw = true;
   }
 
   clearMarkers() {
-    localStorage.setItem('markers', '[]');
+    this.markers.forEach(marker => marker.popper.clear());
     this.markers = [];
+    this.shouldDraw = true;
   }
 
   clearMap() {
     this.markers = [];
+    this.shouldDraw = true;
     this.isDeleted = true;
   }
 
@@ -128,7 +123,6 @@ export class CanvasMap {
     this.img = new Image();
     this.img.src = hrefImg;
     this.img.onload = async () => {
-      await this.#waitForMarkersLoad();
       this.#draw();
     };
   }

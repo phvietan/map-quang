@@ -22,8 +22,9 @@ function translateAfterZoom(beforePoint, mouse, zoom) {
  * @param {CanvasMap} map
  */
 export function _internalOnZoom(event, map) {
-  const mouse = new Point(event.offsetX, event.offsetY);
+  event.preventDefault();
 
+  const mouse = new Point(event.offsetX, event.offsetY);
   const wheelDirection = event.deltaY < 0 ? 1 : -1;
   const zoom = Math.exp(wheelDirection * myGlobal.zoomIntensity);
   if (_internalCheckMaxZoom(map.scale, zoom)) return;
@@ -37,6 +38,8 @@ export function _internalOnZoom(event, map) {
     );
     marker.X = newMarkerPoint.x;
     marker.Y = newMarkerPoint.y;
+    marker.popper.setStyle();
   });
   map.scale *= zoom;
+  map.shouldDraw = true;
 }
