@@ -1,10 +1,14 @@
 import { Popper } from './popper';
-
+import { CanvasMap } from './map';
+import { Point } from './point';
 /**
  * Marker class
  * @property StreamURL, CameraName, CameraType, CameraModel, X, Y, iconUrl
  */
 export class Marker {
+  /** @type CanvasMap */
+  map;
+
   StreamURL = "";
   CameraName = "";
   CameraType = "";
@@ -31,7 +35,13 @@ export class Marker {
     }
   }
 
-  constructor(json) {
+  getRealPoint() {
+    const p = new Point(this.X, this.Y).minus(this.map.imgLocation).multiply(1 / this.map.scale);
+    return p;
+  }
+
+  constructor(map, json) {
+    this.map = map;
     this.#validateAndAssignCameraJson(json);
     Object.assign(this, json);
     this.img = new Image();

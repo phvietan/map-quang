@@ -25,7 +25,7 @@ export class Point {
    * @param {Point} a
    */
   isEqual(a) {
-    return this.x !== a.x || this.y !== a.y;
+    return this.x === a.x && this.y === a.y;
   }
 
   /**

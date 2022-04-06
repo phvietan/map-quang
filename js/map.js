@@ -15,8 +15,7 @@ import { myGlobal } from './global.js';
 // Cannot name Map because there is already a builtin class Map
 export class CanvasMap {
 
-  scale = 1;
-  origin = new Point(0, 0);
+  scale = 1; // Record how much has scaled
   isMoving = false;
   initMovePoint = new Point(0, 0);
   imgLocation = new Point(0, 0);
@@ -24,7 +23,9 @@ export class CanvasMap {
   img;
   canvas;
   context;
-  isMovingMarker = null;
+
+  /** @type Marker */
+  movingMarker = null;
   mouseDownPoint = new Point(0, 0);
 
   /**
@@ -71,7 +72,7 @@ export class CanvasMap {
    * })
    */
   loadOneMarker(markerJson) {
-    const marker = new Marker({
+    const marker = new Marker(this, {
       id: this.markers.length,
       ...markerJson,
     });
@@ -85,10 +86,12 @@ export class CanvasMap {
     this.shouldDraw = true;
   }
 
-  moveMarker(markerId) {
-    this.isMovingMarker = this.markers[markerId];
-    this.clearMarker(markerId);
-
+  moveMarker(event, markerId) {
+    this.movingMarker = this.markers[markerId];
+    this.markers[markerId].popper.show(false);
+    this.markers[markerId].X = event.clientX - this.canvas.offsetLeft;
+    this.markers[markerId].Y = event.clientY - this.canvas.offsetTop;
+    this.shouldDraw = true;
   }
 
   clearMarkers() {

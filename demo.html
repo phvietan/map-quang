@@ -11,9 +11,16 @@
 
 <body>
   <canvas id="map">Your browser doesn't support canvas</canvas>
+  <img id="movingMarker">
   <script src="/dist/bundle.js"></script>
   <script>
-    window.
+    // Don't use camera.X and camera.Y, please use x and y
+    window.afterMoveMarker = function(camera, x, y) {
+      console.log(camera, x, y);
+    }
+    window.afterDeleteMarker = function(camera) {
+      console.log(camera);
+    }
   </script>
 </body>
 

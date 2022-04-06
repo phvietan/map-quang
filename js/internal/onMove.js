@@ -1,5 +1,6 @@
 import { Point } from '../point';
 import { CanvasMap } from '../map';
+import { Popper } from '../popper';
 
 /**
  * Internal event when user on mouse down
@@ -21,20 +22,41 @@ export function _internalOnMouseDown(e, map) {
  */
 export function _internalOnMouseUp(e, map) {
   e.preventDefault();
+  if (!map.isMoving) return; // Edge case: has not click down
   map.isMoving = false;
-  const marker = _internalIsHoverMarker(e, map);
-  if (marker !== null && map.notShowMarkerId !== marker.id) {
-    marker.isSelecting = !marker.isSelecting;
-    if (!marker.isSelecting) {
-      map.notShowMarkerId = marker.id;
-      marker.popper.show(false);
+
+  // If it is click
+  if (map.mouseDownPoint.isEqual(new Point(e.clientX, e.clientY))) {
+
+    // If is moving marker
+    if (map.movingMarker) {
+      const idx = map.markers.findIndex((mark) => mark.id === map.movingMarker.id);
+      if (idx !== -1) {
+        map.markers[idx].X = e.offsetX;
+        map.markers[idx].Y = e.offsetY;
+        map.markers[idx].popper.constructHtml(); // Construct new html because offset X Y has changed
+        const realPoint = map.markers[idx].getRealPoint();
+        window.afterMoveMarker(map.markers[idx], realPoint.x, realPoint.y);
+        map.shouldDraw = true;
+      }
+      map.movingMarker = null;
+      return;
     }
-  // If is click, not move around then release click
-  } else if (!map.mouseDownPoint.isEqual(new Point(e.clientX, e.clientY))) {
-    map.markers.forEach(marker => {
-      marker.isSelecting = false;
-      marker.popper.show(false);
-    });
+
+    // If click on a marker
+    const marker = _internalIsHoverMarker(e, map);
+    if (marker !== null && map.notShowMarkerId !== marker.id) {
+      marker.isSelecting = !marker.isSelecting;
+      if (!marker.isSelecting) {
+        map.notShowMarkerId = marker.id;
+        marker.popper.show(false);
+      }
+    } else { // Click on a empty space
+      map.markers.forEach(marker => {
+        marker.isSelecting = false;
+        marker.popper.show(false);
+      });
+    }
   }
 }
 
@@ -46,14 +68,25 @@ export function _internalOnMouseUp(e, map) {
  */
 export function _internalOnMouseMove(e, map) {
   e.preventDefault();
-  const mark = _internalIsHoverMarker(e, map)
-  if (mark !== null) {
-    if (mark.id !== map.notShowMarkerId) mark.popper.show(true);
+  if (map.movingMarker !== null) {
+    const idx = map.markers.findIndex((mark) => mark.id === map.movingMarker.id);
+    if (idx !== -1) {
+      map.markers[idx].X = e.offsetX;
+      map.markers[idx].Y = e.offsetY;
+      map.shouldDraw = true;
+    }
   } else {
-    map.notShowMarkerId = null;
-    map.markers.forEach((marker) => {
-      marker.popper.show(marker.isSelecting);
-    });
+    const mark = _internalIsHoverMarker(e, map)
+    if (mark !== null) {
+      if (mark.id !== map.notShowMarkerId) {
+        mark.popper.show(true);
+      }
+    } else {
+      map.notShowMarkerId = null;
+      map.markers.forEach((marker) => {
+        marker.popper.show(marker.isSelecting);
+      });
+    }
   }
 }
 

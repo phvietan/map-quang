@@ -54,7 +54,7 @@ export class Popper {
   }
 
   setStyle() {
-    const doc = document.getElementById(`popper-marker-${this.id}`);
+    const doc = document.getElementById(this.id);
     const canvas = document.getElementById('map');
 
     const visibility = (this.isShowing) ? "visible" : "hidden";
@@ -66,17 +66,21 @@ export class Popper {
     doc.style.top = `${this.marker.Y + canvas.offsetTop}px`;
   }
 
-  constructHtmlAndAttachDOM() {
+  parsePoint(point) {
+    return `(${parseFloat(point.x).toFixed(2)}, ${parseFloat(point.y).toFixed(2)})`;
+  }
+
+  constructHtml() {
     try { document.getElementById(this.id).remove(); } catch (e) {}
     this.html = createElementFromHTML(`
-      <div id="popper-marker-${this.id}">
+      <div id="${this.id}">
         <div class="tooltip">
           <span class="tooltiptext">Remove</span>
           <button onclick="clearMarker('${this.marker.id}')">❌</button>
         </div>
         <div class="tooltip">
           <span class="tooltiptext">Edit location</span>
-          <button onclick="moveMarker('${this.marker.id}')">✏️</button>
+          <button onclick="moveMarker(event, '${this.marker.id}')">✏️</button>
         </div>
         <div class="property">
           <div>
@@ -93,7 +97,7 @@ export class Popper {
           </div><br>
           <div>
             <span class="type">Location:</span>
-            <span class="value">(${parseFloat(this.marker.X).toFixed(2)}, ${parseFloat(this.marker.Y).toFixed(2)})</span>
+            <span class="value">${this.parsePoint(this.marker.getRealPoint())}</span>
           </div>
         </div>
       </div>
@@ -104,15 +108,17 @@ export class Popper {
   constructor(marker) {
     this.marker = marker;
     this.id = `popper-marker-${this.marker.id}`;
-    this.constructHtmlAndAttachDOM();
+    this.constructHtml();
     this.setStyle();
   }
 }
 
 window.clearMarker = (markerId) => {
+  const marker = window.map.markers[markerId];
   window.map.clearMarker(markerId);
+  window.afterDeleteMarker(marker);
 }
 
-window.moveMarker = (markerId) => {
-  window.map.moveMarker(markerId);
+window.moveMarker = (event, markerId) => {
+  window.map.moveMarker(event, markerId);
 }
