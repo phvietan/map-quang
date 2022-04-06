@@ -19,22 +19,18 @@ div[id^="popper-marker"] {
   line-height: 1.3em;
 }
 
-div[id^="popper-marker"] .property {
-  margin-top: 15px;
-}
-
-div[id^="popper-marker"] .type {
-  float: left;
-  font-weight: 800;
-}
-
-div[id^="popper-marker"] .value {
-  float: right;
-}
-
+/* popper action */
 .tooltip {
   position: relative;
   display: inline-block;
+}
+
+.tooltip .action {
+  background-color:aliceblue;
+  border: 1px solid;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 .tooltip .tooltiptext {
@@ -68,4 +64,37 @@ div[id^="popper-marker"] .value {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+
+/* popper properties */
+div[id^="popper-marker"] .property {
+  margin-top: 15px;
+}
+
+div[id^="popper-marker"] .type {
+  float: left;
+  font-weight: 800;
+}
+
+div[id^="popper-marker"] .value {
+  float: right;
+}
+
+/* popper tab */
+div[id^="popper-marker"] .tab {
+  margin-top: 15px;
+}
+
+.tab button {
+  background-color: white;
+  border: 1px solid;
+  cursor: pointer;
+  padding: 6px 10px;
+  width: 49%;
+}
+
+.tab .activated {
+  background-color: green;
+  color: white;
 }

@@ -36,6 +36,7 @@ export class Popper {
   width = "230px"; // Default popper's width
   id;
   html;
+  tabChoosing = "properties";
 
   /** @type Marker */
   marker;
@@ -72,17 +73,23 @@ export class Popper {
 
   constructHtml() {
     try { document.getElementById(this.id).remove(); } catch (e) {}
+    const isProperty = this.tabChoosing === 'properties';
+    const isStream = this.tabChoosing === 'stream';
     this.html = createElementFromHTML(`
       <div id="${this.id}">
         <div class="tooltip">
-          <span class="tooltiptext">Remove</span>
-          <button onclick="clearMarker('${this.marker.id}')">❌</button>
+          <span class="tooltiptext">Edit location</span>
+          <button class="action" onclick="moveMarker(event, '${this.marker.id}')">✏️</button>
         </div>
         <div class="tooltip">
-          <span class="tooltiptext">Edit location</span>
-          <button onclick="moveMarker(event, '${this.marker.id}')">✏️</button>
+          <span class="tooltiptext">Remove</span>
+          <button class="action" onclick="clearMarker('${this.marker.id}')">❌</button>
         </div>
-        <div class="property">
+        <div class="tab">
+          <button class="${isProperty ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'properties')">Properties</button>
+          <button class="${isStream ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'stream')">Stream</button>
+        </div>
+        <div class="property" style="display: ${isProperty ? 'block' : 'none'}">
           <div>
             <span class="type">Camera name:</span>
             <span class="value">${valueOrNone(this.marker.CameraName)}</span>
@@ -100,16 +107,24 @@ export class Popper {
             <span class="value">${this.parsePoint(this.marker.getRealPoint())}</span>
           </div>
         </div>
+        <div class="property" style="display: ${isStream ? 'block' : 'none'}">
+          <li class="vms-tab" data-tab="streaming" data-stream-url="${this.marker.StreamURL}" onClick="tryPlay('${this.marker.StreamURL}')">\
+            <a>
+              <span class="icon"><i class="fa-solid fa-camera" aria-hidden="true"></i></span>
+              <span>Streaming</span>
+            </a>
+          </li>
+        </div>
       </div>
     `);
     window.document.body.appendChild(this.html);
+    this.setStyle();
   }
 
   constructor(marker) {
     this.marker = marker;
     this.id = `popper-marker-${this.marker.id}`;
     this.constructHtml();
-    this.setStyle();
   }
 }
 
@@ -121,4 +136,14 @@ window.clearMarker = (markerId) => {
 
 window.moveMarker = (event, markerId) => {
   window.map.moveMarker(event, markerId);
+}
+
+window.tryPlay = (url) => {
+  StartPlay(url);
+}
+
+window.changeTab = (markerId, value) => {
+  const marker = window.map.markers[markerId];
+  marker.popper.tabChoosing = value;
+  marker.popper.constructHtml();
 }
