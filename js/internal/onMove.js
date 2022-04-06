@@ -1,7 +1,8 @@
 import { Point } from '../point';
 import { CanvasMap } from '../map';
+
 /**
- * Internal event when user is about to move, do not care this function
+ * Internal event when user first click
  * @function
  * @param {MouseEvent} e
  * @param {CanvasMap} map
@@ -11,16 +12,22 @@ export function _internalOnMouseDown(e, map) {
   map.initMovePoint = new Point(e.offsetX, e.offsetY);
 }
 
+/**
+ * Internal event when user release click
+ * @function
+ * @param {MouseEvent} e
+ * @param {CanvasMap} map
+ */
 export function _internalOnMouseUp(e, map) {
   map.isMoving = false;
   const marker = _internalIsHoverMarker(e, map);
   if (marker !== null) {
-    console.log(marker);
+    marker.isSelecting = !marker.isSelecting;
   }
 }
 
 /**
- * Internal map move, do not care this function
+ * Internal map move
  * @function
  * @param {MouseEvent} event
  * @param {CanvasMap} map

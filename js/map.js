@@ -53,7 +53,9 @@ export class CanvasMap {
         if (mark !== null) {
           mark.popper.show(true);
         } else {
-          this.markers.forEach((marker) => marker.popper.show(false));
+          this.markers.forEach((marker) => {
+            marker.popper.show(marker.isSelecting);
+          });
         }
       }
     };
