@@ -2,6 +2,23 @@ import { Marker } from './marker';
 
 var cntZIndex = 0;
 
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
+}
+
 function createElementFromHTML(htmlString) {
   var div = document.createElement('div');
   div.innerHTML = htmlString.trim();
@@ -12,7 +29,7 @@ function createElementFromHTML(htmlString) {
 
 function valueOrNone(s) {
   if (s === '') return '<i>none</i>';
-  return s;
+  return escapeHtml(s);
 }
 
 export class Popper {
@@ -53,8 +70,14 @@ export class Popper {
     try { document.getElementById(this.id).remove(); } catch (e) {}
     this.html = createElementFromHTML(`
       <div id="popper-marker-${this.id}">
-        <button onclick="clearMarker('${this.marker.id}')">❌</button>
-        <button onclick="moveMarker('${this.marker.id}')">✏️</button>
+        <div class="tooltip">
+          <span class="tooltiptext">Remove</span>
+          <button onclick="clearMarker('${this.marker.id}')">❌</button>
+        </div>
+        <div class="tooltip">
+          <span class="tooltiptext">Edit location</span>
+          <button onclick="moveMarker('${this.marker.id}')">✏️</button>
+        </div>
         <div class="property">
           <div>
             <span class="type">Camera name:</span>

@@ -2,7 +2,7 @@ import { Point } from '../point';
 import { CanvasMap } from '../map';
 
 /**
- * Internal event when user first click
+ * Internal event when user on mouse down
  * @function
  * @param {MouseEvent} e
  * @param {CanvasMap} map
@@ -14,7 +14,7 @@ export function _internalOnMouseDown(e, map) {
 }
 
 /**
- * Internal event when user release click
+ * Internal event when user release mouse click
  * @function
  * @param {MouseEvent} e
  * @param {CanvasMap} map
@@ -39,7 +39,7 @@ export function _internalOnMouseUp(e, map) {
 }
 
 /**
- * Internal event when user move mouse around (not moving)
+ * Internal event when user move mouse around in canvas (not moving)
  * @function
  * @param {MouseEvent} e
  * @param {CanvasMap} map

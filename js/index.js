@@ -1,16 +1,14 @@
 import { CanvasMap } from "./map";
 import { json } from './test';
 
-ShowCameraInfoImage(json);
-
-function ShowCameraInfoImage(mapInfo) {
+window.ShowCameraInfoImage = function(mapInfo) {
   mapInfo = JSON.parse(mapInfo);
   let {
     Image: img,
     ImageWidth: width,
     ImageHeight: height,
     Info: info,
-  } = mapInfo
+  } = mapInfo;
   img = "/img/sodo.png";
   window.map = new CanvasMap(img);
   info.forEach(camera => {
@@ -24,29 +22,30 @@ function ShowCameraInfoImage(mapInfo) {
   });
 }
 
-function StartPlay(url)
-{
-    console.log(url);
-    window.location.vms_protocol = "http:";
-    var sdk = null; // Global handler to do cleanup when replaying.
-    // Close PC when user replay.
-    if (sdk) {
+window.ShowCameraInfoImage(json);
+
+window.StartPlay = function(url) {
+  console.log(url);
+  window.location.vms_protocol = "http:";
+  var sdk = null; // Global handler to do cleanup when replaying.
+  // Close PC when user replay.
+  if (sdk) {
+    sdk.close();
+  }
+  sdk = new SrsRtcPlayerAsync();
+
+  $('#rtc-player').prop('srcObject', sdk.stream);
+
+  // Optional callback, SDK will add track to stream.
+  // sdk.ontrack = function (event) { console.log('Got track', event); sdk.stream.addTrack(event.track); };
+  // For example: webrtc://r.ossrs.net/live/livestream
+
+  sdk.play(url).then( session => {
+      $('#sessionid').html(session.sessionid);
+      $('#simulator-drop').attr('href', session.simulator + '?drop=1&username=' + session.sessionid);
+  }).catch( reason => {
+      console.error('[StartPlay] [SDK Exception] : ' + reason);
       sdk.close();
-    }
-    sdk = new SrsRtcPlayerAsync();
-
-    $('#rtc-player').prop('srcObject', sdk.stream);
-
-    // Optional callback, SDK will add track to stream.
-    // sdk.ontrack = function (event) { console.log('Got track', event); sdk.stream.addTrack(event.track); };
-    // For example: webrtc://r.ossrs.net/live/livestream
-
-    sdk.play(url).then( session => {
-        $('#sessionid').html(session.sessionid);
-        $('#simulator-drop').attr('href', session.simulator + '?drop=1&username=' + session.sessionid);
-    }).catch( reason => {
-        console.error('[StartPlay] [SDK Exception] : ' + reason);
-        sdk.close();
-        //$('#rtc-player').hide();
-    });
+      //$('#rtc-player').hide();
+  });
 }

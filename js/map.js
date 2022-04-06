@@ -52,9 +52,6 @@ export class CanvasMap {
       if (this.isMoving) _internalOnMove(e, this);
       else _internalOnMouseMove(e, this);
     };
-    // this.canvas.onkeypress = (e) => {
-    //   console.log(e.keyCode);
-    // }
   }
 
   /**
