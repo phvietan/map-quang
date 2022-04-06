@@ -13,7 +13,7 @@ export class Marker {
   Y = 0;
 
   id = 0;
-  size = 50; // Size of marker default is 50x50 pixel (you can pass into constructor to change this size)
+  size = 30; // Size of marker default is 50x50 pixel (you can pass into constructor to change this size)
   iconUrl = '/icon/CameraOn_Dark.svg';
 
   /** @type HTMLImageElement */

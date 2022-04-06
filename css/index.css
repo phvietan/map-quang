@@ -14,12 +14,11 @@ div[id^="popper-marker"] {
   background-color:aliceblue;
   border-width: 2px;
   border-style: solid;
-  width: 180px;
   line-height: 1.3em;
 }
 
 div[id^="popper-marker"] .property {
-  margin-top:15px;
+  margin-top: 15px;
 }
 
 div[id^="popper-marker"] .type {

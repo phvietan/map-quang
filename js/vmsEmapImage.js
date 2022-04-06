@@ -6,7 +6,6 @@ var cameraID = [];
 
 
 function ShowCameraInfoImage(CameraJson) {
-    console.log(CameraJson);
     geostring = CameraJson;
         // Add markers to the map.
     const geojson = JSON.parse(geostring);

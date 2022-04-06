@@ -7,6 +7,7 @@ import {
   _internalOnMouseUp,
   _internalShouldDraw,
   _internalOnMouseDown,
+  _internalOnMouseMove,
   _internalIsHoverMarker,
 } from './internal/index.js';
 import { myGlobal } from './global.js';
@@ -23,12 +24,15 @@ export class CanvasMap {
   img;
   canvas;
   context;
+  isMovingMarker = null;
+  mouseDownPoint = new Point(0, 0);
 
   /**
    * List of markers
    * @type {Marker[]} markers
    */
   markers = [];
+  notShowMarkerId = null;
   isDeleted = false;
 
   #draw() {
@@ -42,22 +46,11 @@ export class CanvasMap {
     this.canvas.onwheel = (e) => _internalOnZoom(e, this);
 
     // Attach move event
-    this.canvas.onmousedown = (e) => {
-      _internalOnMouseDown(e, this);
-    }
+    this.canvas.onmousedown = (e) => _internalOnMouseDown(e, this);
     this.canvas.onmouseup = (e) => _internalOnMouseUp(e, this);
     this.canvas.onmousemove = (e) => {
       if (this.isMoving) _internalOnMove(e, this);
-      else {
-        const mark = _internalIsHoverMarker(e, this)
-        if (mark !== null) {
-          mark.popper.show(true);
-        } else {
-          this.markers.forEach((marker) => {
-            marker.popper.show(marker.isSelecting);
-          });
-        }
-      }
+      else _internalOnMouseMove(e, this);
     };
     // this.canvas.onkeypress = (e) => {
     //   console.log(e.keyCode);
@@ -93,6 +86,12 @@ export class CanvasMap {
     this.markers[markerId].popper.clear();
     this.markers.splice(markerId, 1);
     this.shouldDraw = true;
+  }
+
+  moveMarker(markerId) {
+    this.isMovingMarker = this.markers[markerId];
+    this.clearMarker(markerId);
+
   }
 
   clearMarkers() {

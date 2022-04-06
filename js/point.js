@@ -22,6 +22,13 @@ export class Point {
   }
 
   /**
+   * @param {Point} a
+   */
+  isEqual(a) {
+    return this.x !== a.x || this.y !== a.y;
+  }
+
+  /**
    * @param {number} scale
   */
   multiply(scale) {

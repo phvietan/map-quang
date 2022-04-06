@@ -4,47 +4,14 @@
   <meta charset="UTF-8">
   <title>Zoom maker demo</title>
   <link rel="stylesheet" href="/css/index.css">
+  <script src="/libs/adapter-7.4.0.min.js"></script>
+  <script src="/libs/srs.sdk.js"></script>
+  <script src="/libs/srs.page.js"></script>
 </head>
 
 <body>
   <canvas id="map">Your browser doesn't support canvas</canvas>
   <script src="/dist/bundle.js"></script>
-  <script defer>
-    async function main() {
-      window.map = new CanvasMap('/img/sodo.png');
-      // Example
-      map.loadOneMarker({
-        "StreamURL": "https://...",
-        "CameraName": "Quang",
-        "CameraType": "Type 2",
-        "CameraModel": "Model 2",
-        "X": 100,
-        "Y": 100,
-        // "iconUrl": "/icon/map-marker.png",
-      });
-      map.loadOneMarker({
-        "StreamURL": "https://...",
-        "CameraName": "Quang",
-        "CameraType": "Type 2",
-        "CameraModel": "Model 2",
-        "X": 200,
-        "Y": 200,
-        // "iconUrl": "/icon/map-marker.png",
-      });
-      map.loadOneMarker({
-        "StreamURL": "https://...",
-        "CameraName": "Quang",
-        "CameraType": "Type 2",
-        "CameraModel": "Model 2",
-        "X": 300,
-        "Y": 400,
-        // "iconUrl": "/icon/map-marker.png",
-      });
-    }
-    main();
-
-  </script>
-
 </body>
 
 </html>

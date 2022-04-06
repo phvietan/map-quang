@@ -1,5 +1,7 @@
 import { Marker } from './marker';
 
+var cntZIndex = 0;
+
 function createElementFromHTML(htmlString) {
   var div = document.createElement('div');
   div.innerHTML = htmlString.trim();
@@ -8,7 +10,13 @@ function createElementFromHTML(htmlString) {
   return div.firstChild;
 }
 
+function valueOrNone(s) {
+  if (s === '') return '<i>none</i>';
+  return s;
+}
+
 export class Popper {
+  width = "230px"; // Default popper's width
   id;
   html;
 
@@ -34,6 +42,8 @@ export class Popper {
 
     const visibility = (this.isShowing) ? "visible" : "hidden";
 
+    doc.style.zIndex = ++cntZIndex;
+    doc.style.width = this.width;
     doc.style.visibility = visibility;
     doc.style.left = `${this.marker.X + canvas.offsetLeft}px`;
     doc.style.top = `${this.marker.Y + canvas.offsetTop}px`;
@@ -44,22 +54,23 @@ export class Popper {
     this.html = createElementFromHTML(`
       <div id="popper-marker-${this.id}">
         <button onclick="clearMarker('${this.marker.id}')">❌</button>
+        <button onclick="moveMarker('${this.marker.id}')">✏️</button>
         <div class="property">
           <div>
             <span class="type">Camera name:</span>
-            <span class="value">${this.marker.CameraName}</span>
+            <span class="value">${valueOrNone(this.marker.CameraName)}</span>
           </div><br>
           <div>
             <span class="type">Camera type:</span>
-            <span class="value">${this.marker.CameraType}</span>
+            <span class="value">${valueOrNone(this.marker.CameraType)}</span>
           </div><br>
           <div>
             <span class="type">Camera model:</span>
-            <span class="value">${this.marker.CameraModel}</span>
-          </div>
+            <span class="value">${valueOrNone(this.marker.CameraModel)}</span>
+          </div><br>
           <div>
             <span class="type">Location:</span>
-            <span class="value">(${this.marker.X}, ${this.marker.Y})</span>
+            <span class="value">(${parseFloat(this.marker.X).toFixed(2)}, ${parseFloat(this.marker.Y).toFixed(2)})</span>
           </div>
         </div>
       </div>
@@ -77,4 +88,8 @@ export class Popper {
 
 window.clearMarker = (markerId) => {
   window.map.clearMarker(markerId);
+}
+
+window.moveMarker = (markerId) => {
+  window.map.moveMarker(markerId);
 }

@@ -10,6 +10,7 @@ import { CanvasMap } from '../map';
 export function _internalOnMouseDown(e, map) {
   map.isMoving = true;
   map.initMovePoint = new Point(e.offsetX, e.offsetY);
+  map.mouseDownPoint = new Point(e.clientX, e.clientY);
 }
 
 /**
@@ -19,10 +20,40 @@ export function _internalOnMouseDown(e, map) {
  * @param {CanvasMap} map
  */
 export function _internalOnMouseUp(e, map) {
+  e.preventDefault();
   map.isMoving = false;
   const marker = _internalIsHoverMarker(e, map);
-  if (marker !== null) {
+  if (marker !== null && map.notShowMarkerId !== marker.id) {
     marker.isSelecting = !marker.isSelecting;
+    if (!marker.isSelecting) {
+      map.notShowMarkerId = marker.id;
+      marker.popper.show(false);
+    }
+  // If is click, not move around then release click
+  } else if (!map.mouseDownPoint.isEqual(new Point(e.clientX, e.clientY))) {
+    map.markers.forEach(marker => {
+      marker.isSelecting = false;
+      marker.popper.show(false);
+    });
+  }
+}
+
+/**
+ * Internal event when user move mouse around (not moving)
+ * @function
+ * @param {MouseEvent} e
+ * @param {CanvasMap} map
+ */
+export function _internalOnMouseMove(e, map) {
+  e.preventDefault();
+  const mark = _internalIsHoverMarker(e, map)
+  if (mark !== null) {
+    if (mark.id !== map.notShowMarkerId) mark.popper.show(true);
+  } else {
+    map.notShowMarkerId = null;
+    map.markers.forEach((marker) => {
+      marker.popper.show(marker.isSelecting);
+    });
   }
 }
 
