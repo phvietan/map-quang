@@ -24,6 +24,10 @@ window.ShowCameraInfoImage = function(mapInfo) {
 
 window.ShowCameraInfoImage(json);
 
+window.clearMap = function() {
+  window.map.clearMap();
+}
+
 window.StartPlay = function(url, rtcPlayerId) {
   console.log(url);
   window.location.vms_protocol = "http:";
