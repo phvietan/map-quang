@@ -81,17 +81,24 @@ export class CanvasMap {
 
   clearMarker(markerId) {
     markerId = parseInt(markerId);
-    this.markers[markerId].popper.clear();
-    this.markers.splice(markerId, 1);
-    this.shouldDraw = true;
+    const idx = this.markers.findIndex((marker) => marker.id === markerId);
+    if (idx !== -1) {
+      this.markers[idx].popper.clear();
+      this.markers.splice(idx, 1);
+      this.shouldDraw = true;
+    }
   }
 
   moveMarker(event, markerId) {
-    this.movingMarker = this.markers[markerId];
-    this.markers[markerId].popper.show(false);
-    this.markers[markerId].X = event.clientX - this.canvas.offsetLeft;
-    this.markers[markerId].Y = event.clientY - this.canvas.offsetTop;
-    this.shouldDraw = true;
+    markerId = parseInt(markerId);
+    const idx = this.markers.findIndex((marker) => marker.id === markerId);
+    if (idx !== -1) {
+      this.movingMarker = this.markers[idx];
+      this.markers[idx].popper.show(false);
+      this.markers[idx].X = event.clientX - this.canvas.offsetLeft;
+      this.markers[idx].Y = event.clientY - this.canvas.offsetTop;
+      this.shouldDraw = true;
+    }
   }
 
   clearMarkers() {
