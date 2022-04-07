@@ -116,6 +116,7 @@ function StartPlay(url)
 
     $('#rtc-player').prop('srcObject', sdk.stream);
 
+
     // Optional callback, SDK will add track to stream.
     // sdk.ontrack = function (event) { console.log('Got track', event); sdk.stream.addTrack(event.track); };
     // For example: webrtc://r.ossrs.net/live/livestream

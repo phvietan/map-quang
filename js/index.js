@@ -24,7 +24,7 @@ window.ShowCameraInfoImage = function(mapInfo) {
 
 window.ShowCameraInfoImage(json);
 
-window.StartPlay = function(url) {
+window.StartPlay = function(url, rtcPlayerId) {
   console.log(url);
   window.location.vms_protocol = "http:";
   var sdk = null; // Global handler to do cleanup when replaying.
@@ -34,7 +34,7 @@ window.StartPlay = function(url) {
   }
   sdk = new SrsRtcPlayerAsync();
 
-  $('#rtc-player').prop('srcObject', sdk.stream);
+  $(`#${rtcPlayerId}`).prop('srcObject', sdk.stream);
 
   // Optional callback, SDK will add track to stream.
   // sdk.ontrack = function (event) { console.log('Got track', event); sdk.stream.addTrack(event.track); };

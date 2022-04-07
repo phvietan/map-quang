@@ -33,9 +33,10 @@ function valueOrNone(s) {
 
 export class Popper {
   width = myGlobal.defaultPopperWidth; // Default popper's width
+  rtcPlayerId;
   id;
   html;
-  tabChoosing = "properties";
+  tabChoosing = "property";
 
   /** @type Marker */
   marker;
@@ -72,7 +73,7 @@ export class Popper {
 
   constructHtml() {
     try { document.getElementById(this.id).remove(); } catch (e) {}
-    const isProperty = this.tabChoosing === 'properties';
+    const isProperty = this.tabChoosing === 'property';
     const isStream = this.tabChoosing === 'stream';
     this.html = createElementFromHTML(`
       <div id="${this.id}">
@@ -85,8 +86,8 @@ export class Popper {
           <button class="action" onclick="clearMarker('${this.marker.id}')">❌</button>
         </div>
         <div class="tab">
-          <button class="${isProperty ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'properties')">Properties</button>
-          <button class="${isStream ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'stream')">Stream</button>
+          <button class="tab-btn-property ${isProperty ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'property')">Properties</button>
+          <button class="tab-btn-stream ${isStream ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'stream')">Stream</button>
         </div>
         <div class="property" style="display: ${isProperty ? 'block' : 'none'}">
           <div>
@@ -106,13 +107,18 @@ export class Popper {
             <span class="value">${this.parsePoint(this.marker.getRealPoint())}</span>
           </div>
         </div>
-        <div class="property" style="display: ${isStream ? 'block' : 'none'}">
-          <li class="vms-tab" data-tab="streaming" data-stream-url="${this.marker.StreamURL}" onClick="tryPlay('${this.marker.StreamURL}')">\
-            <a>
-              <span class="icon"><i class="fa-solid fa-camera" aria-hidden="true"></i></span>
-              <span>Streaming</span>
-            </a>
-          </li>
+        <div class="stream" style="display: ${isStream ? 'block' : 'none'}">
+          <button
+            class="vms-tab"
+            data-tab="streaming"
+            data-stream-url="${this.marker.StreamURL}"
+            onClick="tryPlay('${this.marker.StreamURL}', '${this.rtcPlayerId}')"
+          >
+            📷 Start stream
+          </button>
+          <div class="vms-tab-content" data-tab="streaming">
+            <video id="${this.rtcPlayerId}" width="100%" controls autoplay></video>
+          </div>
         </div>
       </div>
     `);
@@ -123,6 +129,7 @@ export class Popper {
   constructor(marker) {
     this.marker = marker;
     this.id = `popper-marker-${this.marker.id}`;
+    this.rtcPlayerId = `rtc-player-${this.marker.id}`;
     this.constructHtml();
   }
 }
@@ -137,12 +144,30 @@ window.moveMarker = (event, markerId) => {
   window.map.moveMarker(event, markerId);
 }
 
-window.tryPlay = (url) => {
-  StartPlay(url);
+window.tryPlay = (url, rtcPlayerId) => {
+  StartPlay(url, rtcPlayerId);
 }
 
+// I wish I start this project in React :<
 window.changeTab = (markerId, value) => {
   const marker = window.map.markers[markerId];
   marker.popper.tabChoosing = value;
-  marker.popper.constructHtml();
+  const popperId = `popper-marker-${markerId}`;
+  const domPopper = document.getElementById(popperId);
+  const propertyComponent = domPopper.getElementsByClassName('property');
+  const streamComponent = domPopper.getElementsByClassName('stream');
+  const propertyBtn = domPopper.getElementsByClassName('tab-btn-property');
+  const streamBtn = domPopper.getElementsByClassName('tab-btn-stream');
+
+  if (value === 'property') {
+    propertyBtn.item(0).className = 'tab-btn-property activated';
+    streamBtn.item(0).className = 'tab-btn-stream';
+    propertyComponent.item(0).style.display = 'block';
+    streamComponent.item(0).style.display = 'none';
+  } else {
+    propertyBtn.item(0).className = 'tab-btn-property';
+    streamBtn.item(0).className = 'tab-btn-stream activated';
+    propertyComponent.item(0).style.display = 'none';
+    streamComponent.item(0).style.display = 'block';
+  }
 }

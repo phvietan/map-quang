@@ -98,3 +98,13 @@ div[id^="popper-marker"] .tab {
   background-color: green;
   color: white;
 }
+
+/* stream */
+.stream button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  border: 1px solid;
+  cursor: pointer;
+  margin-left: 25%;
+}
