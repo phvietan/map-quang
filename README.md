@@ -2,7 +2,7 @@
 
 For indoor map navigator and camera viewer.
 
-Server example running here: http://zoom-maker.drstra.in/
+Server example running here: http://zoom-maker.drstra.in/demo
 
 For @Quang, please look at demo.html:
 
