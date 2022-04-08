@@ -37,6 +37,7 @@ export class Popper {
   id;
   html;
   tabChoosing = "property";
+  isStreaming = false;
 
   /** @type Marker */
   marker;
@@ -108,14 +109,6 @@ export class Popper {
           </div>
         </div>
         <div class="stream" style="display: ${isStream ? 'block' : 'none'}">
-          <button
-            class="vms-tab"
-            data-tab="streaming"
-            data-stream-url="${this.marker.StreamURL}"
-            onClick="tryPlay('${this.marker.StreamURL}', '${this.rtcPlayerId}')"
-          >
-            📷 Start stream
-          </button>
           <div class="vms-tab-content" data-tab="streaming">
             <video id="${this.rtcPlayerId}" width="100%" controls autoplay></video>
           </div>
@@ -124,6 +117,34 @@ export class Popper {
     `);
     window.document.body.appendChild(this.html);
     this.setStyle();
+  }
+
+  // I wish I start this project in React :<
+  changeTab(tabValue) {
+    this.tabChoosing = tabValue;
+    const domPopper = document.getElementById(this.id);
+    const propertyComponent = domPopper.getElementsByClassName('property');
+    const streamComponent = domPopper.getElementsByClassName('stream');
+    const propertyBtn = domPopper.getElementsByClassName('tab-btn-property');
+    const streamBtn = domPopper.getElementsByClassName('tab-btn-stream');
+
+    if (tabValue === 'property') {
+      propertyBtn.item(0).className = 'tab-btn-property activated';
+      streamBtn.item(0).className = 'tab-btn-stream';
+      propertyComponent.item(0).style.display = 'block';
+      streamComponent.item(0).style.display = 'none';
+    } else {
+      propertyBtn.item(0).className = 'tab-btn-property';
+      streamBtn.item(0).className = 'tab-btn-stream activated';
+      propertyComponent.item(0).style.display = 'none';
+      streamComponent.item(0).style.display = 'block';
+
+      // First time start stream
+      if (!this.isStreaming) {
+        window.tryPlay(this.marker.StreamURL, this.rtcPlayerId);
+        this.isStreaming = true;
+      }
+    }
   }
 
   constructor(marker) {
@@ -135,9 +156,10 @@ export class Popper {
 }
 
 window.clearMarker = (markerId) => {
-  const marker = window.map.markers[markerId];
   window.map.clearMarker(markerId);
-  window.afterDeleteMarker(marker);
+  const { markers } = window.map;
+  const idx = markers.findIndex((marker) => marker.id == markerId);
+  if (idx !== -1) window.afterDeleteMarker(window.map.markers[idx]);
 }
 
 window.moveMarker = (event, markerId) => {
@@ -148,26 +170,11 @@ window.tryPlay = (url, rtcPlayerId) => {
   StartPlay(url, rtcPlayerId);
 }
 
-// I wish I start this project in React :<
 window.changeTab = (markerId, value) => {
-  const marker = window.map.markers[markerId];
-  marker.popper.tabChoosing = value;
-  const popperId = `popper-marker-${markerId}`;
-  const domPopper = document.getElementById(popperId);
-  const propertyComponent = domPopper.getElementsByClassName('property');
-  const streamComponent = domPopper.getElementsByClassName('stream');
-  const propertyBtn = domPopper.getElementsByClassName('tab-btn-property');
-  const streamBtn = domPopper.getElementsByClassName('tab-btn-stream');
-
-  if (value === 'property') {
-    propertyBtn.item(0).className = 'tab-btn-property activated';
-    streamBtn.item(0).className = 'tab-btn-stream';
-    propertyComponent.item(0).style.display = 'block';
-    streamComponent.item(0).style.display = 'none';
-  } else {
-    propertyBtn.item(0).className = 'tab-btn-property';
-    streamBtn.item(0).className = 'tab-btn-stream activated';
-    propertyComponent.item(0).style.display = 'none';
-    streamComponent.item(0).style.display = 'block';
+  const { markers } = window.map;
+  const idx = markers.findIndex((marker) => marker.id == markerId);
+  if (idx !== -1) {
+    const marker = markers[idx];
+    marker.popper.changeTab(value);
   }
 }

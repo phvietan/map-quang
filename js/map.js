@@ -81,7 +81,7 @@ export class CanvasMap {
 
   clearMarker(markerId) {
     markerId = parseInt(markerId);
-    const idx = this.markers.findIndex((marker) => marker.id === markerId);
+    const idx = this.markers.findIndex((marker) => marker.id == markerId);
     if (idx !== -1) {
       this.markers[idx].popper.clear();
       this.markers.splice(idx, 1);
@@ -91,7 +91,7 @@ export class CanvasMap {
 
   moveMarker(event, markerId) {
     markerId = parseInt(markerId);
-    const idx = this.markers.findIndex((marker) => marker.id === markerId);
+    const idx = this.markers.findIndex((marker) => marker.id == markerId);
     if (idx !== -1) {
       this.movingMarker = this.markers[idx];
       this.markers[idx].popper.show(false);

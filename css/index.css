@@ -102,11 +102,6 @@ div[id^="popper-marker"] .tab {
 }
 
 /* stream */
-.stream button {
+.stream video {
   margin-top: 10px;
-  margin-bottom: 10px;
-  background-color: transparent;
-  border: 1px solid;
-  cursor: pointer;
-  margin-left: 25%;
 }

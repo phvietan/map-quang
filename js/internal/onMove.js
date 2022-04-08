@@ -30,7 +30,7 @@ export function _internalOnMouseUp(e, map) {
 
     // If is moving marker
     if (map.movingMarker) {
-      const idx = map.markers.findIndex((mark) => mark.id === map.movingMarker.id);
+      const idx = map.markers.findIndex((mark) => mark.id == map.movingMarker.id);
       if (idx !== -1) {
         map.markers[idx].X = e.offsetX;
         map.markers[idx].Y = e.offsetY;
@@ -69,7 +69,7 @@ export function _internalOnMouseUp(e, map) {
 export function _internalOnMouseMove(e, map) {
   e.preventDefault();
   if (map.movingMarker !== null) {
-    const idx = map.markers.findIndex((mark) => mark.id === map.movingMarker.id);
+    const idx = map.markers.findIndex((mark) => mark.id == map.movingMarker.id);
     if (idx !== -1) {
       map.markers[idx].X = e.offsetX;
       map.markers[idx].Y = e.offsetY;
