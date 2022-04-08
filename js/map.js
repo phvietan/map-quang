@@ -77,6 +77,7 @@ export class CanvasMap {
       ...markerJson,
     });
     this.markers.push(marker);
+    this.shouldDraw = true;
   }
 
   clearMarker(markerId) {
@@ -130,9 +131,7 @@ export class CanvasMap {
     // Load image and initialize draw animation
     this.img = new Image();
     this.img.src = hrefImg;
-    this.img.onload = async () => {
-      this.#draw();
-    };
+    this.img.onload = () => this.#draw();
   }
 }
 
