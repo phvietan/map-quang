@@ -40,6 +40,16 @@ export class Marker {
     return p;
   }
 
+  changeIconUrl(newIconUrl) {
+    this.iconUrl = newIconUrl;
+    this.img = new Image();
+    this.img.src = this.iconUrl;
+    this.img.onload = () => {
+      console.log(`Done loaded icon for marker ${this.id}`);
+    }
+    window.map.shouldDraw = true; // Dơ vl
+  }
+
   constructor(map, json) {
     this.map = map;
     this.#validateAndAssignCameraJson(json);

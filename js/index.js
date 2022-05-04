@@ -1,5 +1,6 @@
 import { CanvasMap } from "./map";
 import { json } from './test';
+import { myGlobal } from './global.js';
 
 window.ShowCameraInfoImage = function(mapInfo) {
   mapInfo = JSON.parse(mapInfo);
@@ -9,7 +10,7 @@ window.ShowCameraInfoImage = function(mapInfo) {
     ImageHeight: height,
     Info: info,
   } = mapInfo;
-  img = "/img/sodo.png";
+  img = '/img/sodo.png';
   window.map = new CanvasMap(img);
   info.forEach(camera => {
     const x = camera.Long * 1000;
@@ -22,11 +23,41 @@ window.ShowCameraInfoImage = function(mapInfo) {
   });
 }
 
-window.ShowCameraInfoImage(json);
+console.log(json);
 
-window.clearMap = function() {
+ShowCameraInfoImage(json);
+
+window.InitImage = function(img) {
+  img = JSON.parse(img);
+  let {
+    Image: imgjs,
+  } = img;
+  imgjs = "data:image/jpeg;base64," + imgjs;
+  window.map = new CanvasMap(imgjs);
+}
+
+window.AddOneMarker = function(marker){
+  marker = JSON.parse(marker);
+  let {
+    ImageWidth: width,
+    ImageHeight: height,
+    Info:info,
+  } = marker;
+  info.forEach(camera =>{
+    const x = myGlobal.sizeMapWidth / 2;
+    const y = myGlobal.sizeMapHeight /2;
+    window.map.loadOneMarker({
+      ...camera,
+      "X": x,
+      "Y": y,
+    });
+  });
+}
+
+window.clearMap = function(mapInfo) {
   window.map.clearMap();
 }
+
 
 window.StartPlay = function(url, rtcPlayerId) {
   console.log(url);
