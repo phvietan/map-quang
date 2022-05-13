@@ -5,6 +5,10 @@
   <title>Zoom maker demo</title>
   <link rel="stylesheet" href="/css/index.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <link rel="stylesheet" href="/css/bulma.min.css">
+  <link rel="stylesheet" href="/css/fontawesome/css/all.min.css">
+
   <script src="/libs/adapter-7.4.0.min.js"></script>
   <script src="/libs/srs.sdk.js"></script>
   <script src="/libs/srs.page.js"></script>
@@ -12,14 +16,75 @@
 
 <body>
   <canvas id="map">Your browser doesn't support canvas</canvas>
+
+  <div id="modal-delete-camera" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Warning</h2>
+        <button onclick="window.clearCameraNo()" aria-label="close">X</button>
+      </div>
+      <p>Are you sure to delete the camera ?</p>
+      <br>
+      <button class="button is-danger" onclick="window.clearCamera()">
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-find-nearby" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Find nearby cameras</h2>
+        <button onclick="window.editMarkerNo()" aria-label="close">X</button>
+      </div>
+      <p>Number of devices: </p>
+      <input id="devices" type ="number"  min = "0" step="1" name="rtoggle" value = "0" style="width: 90px;">
+      <br><br>
+      <button class="button is-success" onclick="window.editMarkerYes()">
+        Find
+      </button>
+    </div>
+  </div>
+
+  <div id = "nearby-devices" style = "display: none;">        
+    <div id ="nearby_device" >Number of Devices:<input id="devices" type ="number"  min = "0" step="1" name="rtoggle" value = "0" style="width: 90px;"></div>
+    <button class="fa-solid fa-check"  style="font-size: 1.5rem; color: inherit; background-color: transparent;"  onClick= "edit_marker1()"></button>
+  </div>
   <img id="movingMarker">
-  <script src="/dist/bundle.js"></script>
+  <script src="dist/bundle.js"></script>
   <script>
-    // Don't use camera.X and camera.Y, please use x and y
     window.afterMoveMarker = function(camera, x, y) {
+      var def_JSMSG_UPDATE_MARKER = { name: 'JS_UPDATE_MARKER_IMAGE', code: 6 }; 
+      var m = {};
+      m.msg_code= def_JSMSG_UPDATE_MARKER.code;
+      m.msg_name= def_JSMSG_UPDATE_MARKER.name;
+      m.msg_args = {};
+      m.msg_args.rcv_lat = y;
+      m.msg_args.rcv_long = x;
+      m.msg_args.rcv_cameraID = camera.CameraID;
+      var message = JSON.stringify(m);
+      window.cefQuery({
+        request: message,
+        onSuccess: function (res) {},
+        onFailure: function (error_code, error_message) { }
+      });
       console.log(camera, x, y);
     }
     window.afterDeleteMarker = function(camera) {
+      var def_JSMSG_DELETE_MARKER = { name: 'JS_DELETE_MARKER_IMAGE', code: 7 }; 
+      var m = {};
+      m.msg_code= def_JSMSG_DELETE_MARKER.code;
+      m.msg_name= def_JSMSG_DELETE_MARKER.name;  
+      m.msg_args = {};
+      m.msg_args.rcv_cameraID = camera.CameraID;
+      var message = JSON.stringify(m);
+      window.cefQuery({
+        request: message,
+        onSuccess: function (res) {},
+        onFailure: function (error_code, error_message) { }
+      });
       console.log(camera);
     }
   </script>

@@ -9,7 +9,7 @@ export const myGlobal = {
   limitMaxZoomIn: 3, // Limit zoom in for 3 times bigger
   limitMaxZoomOut: 3, // Limit zoom out for 3 times smaller
 
-  defaultPopperWidth: '250px',
+  defaultPopperWidth: '370px',
 };
 
 window.myGlobal = myGlobal;

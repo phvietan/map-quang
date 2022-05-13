@@ -12,17 +12,27 @@ canvas {
 /* popper */
 div[id^="popper-marker"] {
   position: absolute;
-  padding: 10px;
+  padding: 20px;
   background-color:aliceblue;
   border-width: 2px;
   border-style: solid;
-  line-height: 1.3em;
+  line-height: 2.2em;
+  font-size: 1.15em;
 }
 
 /* popper action */
 .tooltip {
   position: relative;
   display: inline-block;
+}
+
+.tooltip button {
+  font-size: 1.3rem; 
+  color: inherit;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px black solid;
+  background-color: transparent;
 }
 
 .tooltip .action {
@@ -35,7 +45,7 @@ div[id^="popper-marker"] {
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
+  width: 140px;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -89,17 +99,45 @@ div[id^="popper-marker"] .tab {
 .tab button {
   background-color: white;
   border: 1px solid;
-  cursor: pointer;
-  padding: 6px 10px;
+  cursor: pointer !important;
+  padding: 10px;
+  font-size: 1.2rem;
   width: 49%;
 }
 
 .tab .activated {
-  background-color: green;
+  background-color: rgb(39, 109, 230);
   color: white;
 }
 
 /* stream */
 .stream video {
   margin-top: 10px;
+}
+
+.modal-content {
+  background-color: white;
+  color: black;
+  z-index: 999;
+  padding: 1%;
+  width: 500px !important;
+}
+
+.modal-content .modal-header {
+  width: 100%;
+  padding-bottom: 5px;
+  border-bottom: 1px rgb(192, 190, 190) solid;
+  margin-bottom: 20px;
+}
+
+.modal-content .modal-header h2 {
+  display:inline-block; 
+  font-size: 1.7em;
+}
+
+.modal-content .modal-header button {
+  float: right;
+  border: none;
+  cursor: pointer;
+  background-color: inherit;
 }

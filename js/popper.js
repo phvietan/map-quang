@@ -1,7 +1,9 @@
 import { myGlobal } from './global';
 import { Marker } from './marker';
 
+var cleanMarker = -1;
 var cntZIndex = 0;
+var markerNearby = -1;
 
 var entityMap = {
   '&': '&amp;',
@@ -80,15 +82,26 @@ export class Popper {
       <div id="${this.id}">
         <div class="tooltip">
           <span class="tooltiptext">Edit location</span>
-          <button class="action" onclick="moveMarker(event, '${this.marker.id}')">✏️</button>
+          <button class="fa-solid fa-marker" onclick="moveMarker(event, '${this.marker.id}')"></button>
         </div>
         <div class="tooltip">
           <span class="tooltiptext">Remove</span>
-          <button class="action" onclick="clearMarker('${this.marker.id}')">❌</button>
+          <button class="fa-solid fa-trash-can" onclick="clearCameraShow('${this.marker.id}')"></button>
         </div>
+        <div class="tooltip">
+          <span class="tooltiptext">Find Nearby Devices</span>
+          <button class="fa-solid fa-magnifying-glass-location" onclick="editMarker('${this.marker.id}')"></button>
+        </div>
+
         <div class="tab">
-          <button class="tab-btn-property ${isProperty ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'property')">Properties</button>
-          <button class="tab-btn-stream ${isStream ? 'activated' : ''}" width="49%" onclick="changeTab('${this.marker.id}', 'stream')">Stream</button>
+          <button class="tab-btn-property ${isProperty ? 'activated' : ''}" onclick="changeTab('${this.marker.id}', 'property')">
+            <span class="icon"><i <i class="fa-solid fa-barcode" aria-hidden="true"></i></span>
+            Properties
+          </button>
+          <button class="tab-btn-stream ${isStream ? 'activated' : ''}" onclick="changeTab('${this.marker.id}', 'stream')">
+            <span class="icon"><i class="fa-solid fa-camera" aria-hidden="true"></i></span>
+            Stream
+          </button>
         </div>
         <div class="property" style="display: ${isProperty ? 'block' : 'none'}">
           <div>
@@ -155,17 +168,71 @@ export class Popper {
   }
 }
 
-window.clearMarker = (markerId) => {
-  window.map.clearMarker(markerId);
+// Action delete
+window.clearCamera = () => {
   const { markers } = window.map;
-  const idx = markers.findIndex((marker) => marker.id == markerId);
-  if (idx !== -1) window.afterDeleteMarker(window.map.markers[idx]);
+  const idx = markers.findIndex((marker) => marker.id == cleanMarker);
+  if (idx !== -1) 
+    window.afterDeleteMarker(window.map.markers[idx]);
+  window.map.clearMarker(cleanMarker);
+  window.clearCameraNo();
+}
+window.clearCameraShow = (markerId) => {
+  $("#modal-delete-camera").addClass('is-active');
+  cleanMarker = markerId;
+}
+window.clearCameraNo = () => {
+  $("#modal-delete-camera").removeClass('is-active');
 }
 
+// Action move
 window.moveMarker = (event, markerId) => {
   window.map.moveMarker(event, markerId);
 }
 
+// Action find nearby
+function getDistance(x1, y1, x2, y2){
+  let y = x2 - x1;
+  let x = y2 - y1;
+  
+  return Math.sqrt(x * x + y * y);
+}
+
+window.editMarkerNo = () => {
+  $('#modal-find-nearby').removeClass('is-active');
+}
+window.editMarker = (e) => {
+  $('#modal-find-nearby').addClass('is-active');
+  markerNearby = e;
+}
+window.editMarkerYes = () => {
+  var nearbyDevices = [];
+  window.map.reMarkerStyle();
+  let numbers = document.getElementById('devices').value;
+  const { markers } = window.map;
+  for (var i = 0; i <= markers.length - 1; i++) {
+      const lngLat = markers[i]
+      const lnglat_marker = markers[markerNearby]
+      nearbyDevices.push(getDistance(lngLat.X,lngLat.Y,lnglat_marker.X,lnglat_marker.Y));
+  }
+  console.log(nearbyDevices);
+  for (var i = 0; i <= numbers-1; i++) {
+      var x = 10000;
+      var min = 10000;
+      for (var j = 0; j <= markers.length - 1; j++){
+          if ((nearbyDevices[j] <min)&& (nearbyDevices[j] !==0))
+          {
+              x = j;
+              min = nearbyDevices[j];
+          }
+      }
+      window.map.updateMarkerStyle(x);
+      nearbyDevices[x] = 0;
+  }
+  window.editMarkerNo();
+}
+
+// Action play video
 window.tryPlay = (url, rtcPlayerId) => {
   StartPlay(url, rtcPlayerId);
 }
