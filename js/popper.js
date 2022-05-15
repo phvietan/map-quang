@@ -48,6 +48,8 @@ export class Popper {
   show(shouldShow) {
     if (this.isShowing !== shouldShow) {
       this.isShowing = shouldShow;
+      const doc = document.getElementById(this.id);
+      doc.style.zIndex = ++cntZIndex;
       this.setStyle();
     }
   }
@@ -63,7 +65,6 @@ export class Popper {
 
     const visibility = (this.isShowing) ? "visible" : "hidden";
 
-    doc.style.zIndex = ++cntZIndex;
     doc.style.width = this.width;
     doc.style.visibility = visibility;
     doc.style.left = `${this.marker.X + canvas.offsetLeft}px`;
@@ -172,7 +173,7 @@ export class Popper {
 window.clearCamera = () => {
   const { markers } = window.map;
   const idx = markers.findIndex((marker) => marker.id == cleanMarker);
-  if (idx !== -1) 
+  if (idx !== -1)
     window.afterDeleteMarker(window.map.markers[idx]);
   window.map.clearMarker(cleanMarker);
   window.clearCameraNo();
@@ -194,7 +195,7 @@ window.moveMarker = (event, markerId) => {
 function getDistance(x1, y1, x2, y2){
   let y = x2 - x1;
   let x = y2 - y1;
-  
+
   return Math.sqrt(x * x + y * y);
 }
 
